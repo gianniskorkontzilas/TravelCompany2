@@ -29,7 +29,7 @@ public class Main {
     public static void main(String[] args) {
         //Loading collections from file to repositories
         // for customers
-        List<String> customersAsLines = FileParser.load("customers.csv");
+        List<String> customersAsLines = FileParser.load("src/main/resources/data/customers.csv");
         CustomerFactory customerFactory = new CustomerFactory();
         List<Customer> customersFromFactory = customerFactory.parse(customersAsLines);
         BaseRepository<Customer> customerRepository = new CustomerRepository();
@@ -44,11 +44,11 @@ public class Main {
         List<Customer> customerList = customerService.getAll();
 
         // for itineraries
-        List<String> itinerariesAsLines = FileParser.load("itineraries.csv");
+        List<String> itinerariesAsLines = FileParser.load("src/main/resources/data/itineraries.csv");
         ItineraryFactory itineraryFactory = new ItineraryFactory();
         List<Itinerary> itinerariesFromFactory = itineraryFactory.parse(itinerariesAsLines);
         BaseRepository<Itinerary> itineraryRepository = new ItineraryRepository();
-        List<String> airportCodesAsLines = FileParser.load("airport_codes.csv");
+        List<String> airportCodesAsLines = FileParser.load("src/main/resources/data/airport_codes.csv");
         AirportCodeFactory airportCodeFactory = new AirportCodeFactory();
         List<AirportCode> airportCodesFromFactory = airportCodeFactory.parse(airportCodesAsLines);
         BaseRepository<AirportCode> airportCodeRepository = new AirportCodeRepository();
