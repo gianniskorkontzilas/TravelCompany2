@@ -12,9 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Generates various reports for the system based on the tickets purchased
- * For the following reports, any return type could be valid, for example, the developer could choose to return
- * a list of strings, a list of objects or a DTO. All these ideas have been implemented one way or another
+ * Generates various reports for the system based on the tickets purchased. Depending on the type of report, a different
+ * return object may be created (List, String, DTO etc.)
  */
 @AllArgsConstructor
 public class ReporterService {
@@ -37,16 +36,17 @@ public class ReporterService {
                     .filter(ticket -> ticket.getCustomerCode() == customer.getId())
                     .map(Ticket::getPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            customerPerLine.add(new CustomerForReportingDTO(totalNumberOfTicketsPerCustomer.get(customer.getId()), totalCostForCustomer, customer));
+            CustomerForReportingDTO dto = new CustomerForReportingDTO(totalNumberOfTicketsPerCustomer.get(customer.getId()), totalCostForCustomer, customer);
+            customerPerLine.add(dto);
         }
         return customerPerLine;
     }
 
     /**
-     * List of the total offered itineraries per destination and offered itineraries per departure
+     * List of the total offered itineraries per departure
      * @return
      */
-    public StringBuilder totalOfferedItinerariesPerDestinationAndTotalOfferedItinerariesPerDeparture(){
+    public String totalOfferedItinerariesPerDeparture(){
         List<Itinerary> allItineraries = itineraryService.getAll();
         StringBuilder result = new StringBuilder();
         result.append("\n-------------------");
@@ -66,6 +66,16 @@ public class ReporterService {
                 }
             }
         }
+        return result.toString();
+    }
+
+    /**
+     * List of the total offered itineraries per destination
+     * @return
+     */
+    public String totalOfferedItinerariesPerDestination(){
+        List<Itinerary> allItineraries = itineraryService.getAll();
+        StringBuilder result = new StringBuilder();
         result.append("\n-------------------");
         result.append("\nPER DESTINATION");
         result.append("\n-------------------");
@@ -83,14 +93,14 @@ public class ReporterService {
                 }
             }
         }
-        return result;
+        return result.toString();
     }
 
     /**
-     * List of the customers with the most tickets and with the largest cost of purchases
+     * List of the customers with the most tickets
      * @return
      */
-    public StringBuilder customersWithMostTicketAndLargestCostPurchased(){
+    public String customersWithMostTickets(){
         List<CustomerForReportingDTO> perCustomer = totalNumberOfTicketsAndTotalCostOfTicketsPerCustomer();
         StringBuilder result = new StringBuilder();
         result.append("-------------------");
@@ -101,6 +111,16 @@ public class ReporterService {
                 .filter(customerForReportingDTO -> customerForReportingDTO.getTotalTickets() != null)
                 .sorted((dto1, dto2) -> (int) (dto2.getTotalTickets() - dto1.getTotalTickets()))
                 .forEach(dto -> result.append("\n\t").append(dto));
+        return result.toString();
+    }
+
+    /**
+     * List of the customers with the largest cost of purchases
+     * @return
+     */
+    public String customersWithLargestCostPurchased(){
+        List<CustomerForReportingDTO> perCustomer = totalNumberOfTicketsAndTotalCostOfTicketsPerCustomer();
+        StringBuilder result = new StringBuilder();
         result.append("\n-------------------");
         result.append("\nLARGEST COST");
         result.append("\n-------------------");
@@ -110,7 +130,7 @@ public class ReporterService {
                 .sorted(Comparator.comparing(CustomerForReportingDTO::getTotalCost).reversed())
                 .forEach(dto -> result.append("\n\t").append(dto));
 
-        return result;
+        return result.toString();
     }
 
     /**

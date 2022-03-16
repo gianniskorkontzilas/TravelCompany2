@@ -30,6 +30,11 @@ public class Main {
 
     private static final String LINE_SEPARATOR = "=========================";
 
+    public static final String FILE_DATA_ROOT = "src/main/resources/data/";
+    public static final String FILE_CUSTOMERS = FILE_DATA_ROOT + "customers.csv";
+    public static final String FILE_AIRPORT_CODES = FILE_DATA_ROOT + "airport_codes.csv";
+    public static final String FILE_ITINERARIES = FILE_DATA_ROOT + "itineraries.csv";
+
     private static void log(String text) {
         System.out.println(text);
     }
@@ -38,6 +43,11 @@ public class Main {
         log("\n" + LINE_SEPARATOR + " " + message + " " + LINE_SEPARATOR);
     }
 
+    /**
+     * Use case: show details of all customers
+     *
+     * @param customerList the customers to show
+     */
     private static void showCustomers(List<Customer> customerList) {
         newSection("showCustomers");
         log("Customers:");
@@ -46,6 +56,11 @@ public class Main {
         }
     }
 
+    /**
+     * Use case: show details of all itineraries
+     *
+     * @param itineraryList the itineraries to show
+     */
     private static void showItinerary(List<Itinerary> itineraryList) {
         newSection("showItinerary");
         log("Itineraries:");
@@ -54,6 +69,14 @@ public class Main {
         }
     }
 
+    /**
+     * Use case: for a list of itineraries and a list of customers, push the related tickets to the ticketService. The
+     * payment method is hard-coded as both credit and cash. A few additional test cases are attempted.
+     *
+     * @param customerList
+     * @param itineraryList
+     * @param ticketService
+     */
     private static void addTicketsToService(List<Customer> customerList, List<Itinerary> itineraryList, TicketService ticketService) {
         newSection("addTicketsToService");
         try {
@@ -70,6 +93,12 @@ public class Main {
         }
     }
 
+    /**
+     * Use case: attempt to build an invalid itinerary
+     *
+     * @param customerList
+     * @param ticketService
+     */
     private static void checkInvalidItinerary(List<Customer> customerList, TicketService ticketService) {
         newSection("checkInvalidItinerary");
         try {
@@ -80,6 +109,12 @@ public class Main {
         }
     }
 
+    /**
+     * Use case: attempt to add a ticket for an invalid customer
+     *
+     * @param itineraryList
+     * @param ticketService
+     */
     private static void checkInvalidCustomer(List<Itinerary> itineraryList, TicketService ticketService) {
         newSection("checkInvalidCustomer");
         try {
@@ -90,6 +125,11 @@ public class Main {
         }
     }
 
+    /**
+     * Use case: show all ticketService ticket details
+     *
+     * @param ticketService
+     */
     private static void confirmTicketRegistrations(TicketService ticketService) {
         newSection("confirmTicketRegistrations");
         log("Checking if tickets are properly registered");
@@ -99,7 +139,17 @@ public class Main {
         }
     }
 
-    private static ReporterService getTicketsAndCosts(CustomerService customerService, AirportCodeService airportCodeService, ItineraryService itineraryService, TicketService ticketService) {
+    /**
+     * Use case: show a report on tickets and costs
+     *
+     * @param customerService
+     * @param airportCodeService
+     * @param itineraryService
+     * @param ticketService
+     * @return
+     */
+    private static ReporterService getTicketsAndCosts(CustomerService customerService, AirportCodeService airportCodeService,
+                                                      ItineraryService itineraryService, TicketService ticketService) {
         newSection("getTicketsAndCosts");
         ReporterService reporterService = new ReporterService(ticketService, customerService, itineraryService, airportCodeService);
         log("List of the total number and list of the cost of tickets for all customers");
@@ -112,20 +162,59 @@ public class Main {
         return reporterService;
     }
 
+    /**
+     * Use case: show a report on itineraries per destination
+     *
+     * @param reporterService
+     */
     private static void getItinerariesPerDestination(ReporterService reporterService) {
         newSection("getItinerariesPerDestination");
-        log("List of the total offered itineraries per destination and offered itineraries per departure");
-        StringBuilder totalItineraries = reporterService.totalOfferedItinerariesPerDestinationAndTotalOfferedItinerariesPerDeparture();
-        log(totalItineraries.toString());
+        log("List of the total offered itineraries per destination");
+        String totalItineraries = reporterService.totalOfferedItinerariesPerDestination();
+        log(totalItineraries);
     }
 
+    /**
+     * Use case: show a report on itineraries per departure
+     *
+     * @param reporterService
+     */
+    private static void getItinerariesPerDeparture(ReporterService reporterService) {
+        newSection("getItinerariesPerDeparture");
+        log("List of the total offered itineraries per destination and offered itineraries per departure");
+        String totalItineraries = reporterService.totalOfferedItinerariesPerDeparture();
+        log(totalItineraries);
+    }
+
+    /**
+     * Use case: show a report on customers with most tickets
+     *
+     * @param reporterService
+     */
     private static void getCustomersWithMostTickets(ReporterService reporterService) {
         newSection("getCustomersWithMostTickets");
         log("List of the customers with the most tickets and with the largest cost of purchases");
-        StringBuilder customers = reporterService.customersWithMostTicketAndLargestCostPurchased();
-        log(customers.toString());
+        String customers = reporterService.customersWithMostTickets();
+        log(customers);
     }
 
+    /**
+     * Use case: show a report on customers with the largest cost purchased
+     *
+     * @param reporterService
+     */
+    private static void getCustomersWithLargestCostPurchased(ReporterService reporterService) {
+        newSection("getCustomersWithLargestCostPurchased");
+        log("List of the customers with the most tickets and with the largest cost of purchases");
+        String customers = reporterService.customersWithLargestCostPurchased();
+        log(customers);
+    }
+
+    /**
+     * Use case: show a report on customers with no tickets purchased
+     *
+     * @param reporterService
+     */
     private static void getCustomersWithNoTickets(ReporterService reporterService) {
         newSection("getCustomersWithNoTickets");
         log("List of the customers who have not purchased any tickets");
@@ -135,7 +224,18 @@ public class Main {
         }
     }
 
-    private static ItineraryService createBaseItineraryService(List<Itinerary> itinerariesFromFactory, BaseRepository<Itinerary> itineraryRepository, AirportCodeService airportCodeService) {
+    /**
+     * Use case: create the ItineraryService that will service the provided list of itineraries, with a given repository.
+     * A list of airport codes is also provided, to check the validity of the itineraries
+     *
+     * @param itinerariesFromFactory
+     * @param itineraryRepository
+     * @param airportCodeService     a service which returns information on airports - needed to check the validity of the itineraries
+     * @return
+     */
+    private static ItineraryService createBaseItineraryService(List<Itinerary> itinerariesFromFactory,
+                                                               BaseRepository<Itinerary> itineraryRepository,
+                                                               AirportCodeService airportCodeService) {
         newSection("createBaseItineraryService");
         ItineraryService itineraryService = new ItineraryService(itineraryRepository, airportCodeService);
         try {
@@ -149,9 +249,15 @@ public class Main {
         return itineraryService;
     }
 
+    /**
+     * Use case: read the itinerary data from a file and give the ItineraryService for them
+     *
+     * @param airportCodeService a service which returns information on airports - needed to check the validity of the itineraries
+     * @return
+     */
     private static ItineraryService createFullItineraryService(AirportCodeService airportCodeService) {
         newSection("createFullItineraryService");
-        List<String> itinerariesAsLines = FileParser.load("src/main/resources/data/itineraries.csv");
+        List<String> itinerariesAsLines = FileParser.load(FILE_ITINERARIES);
         ItineraryFactory itineraryFactory = new ItineraryFactory();
         List<Itinerary> itinerariesFromFactory = itineraryFactory.parse(itinerariesAsLines);
         BaseRepository<Itinerary> itineraryRepository = new ItineraryRepository();
@@ -160,9 +266,14 @@ public class Main {
         return itineraryService;
     }
 
+    /**
+     * Use case: read the airport data from a file and give the AirportCodeService for them
+     *
+     * @return
+     */
     private static AirportCodeService createAirportCodeService() {
         newSection("createAirportCodeService");
-        List<String> airportCodesAsLines = FileParser.load("src/main/resources/data/airport_codes.csv");
+        List<String> airportCodesAsLines = FileParser.load(FILE_AIRPORT_CODES);
         AirportCodeFactory airportCodeFactory = new AirportCodeFactory();
         List<AirportCode> airportCodesFromFactory = airportCodeFactory.parse(airportCodesAsLines);
         BaseRepository<AirportCode> airportCodeRepository = new AirportCodeRepository();
@@ -172,9 +283,14 @@ public class Main {
         return airportCodeService;
     }
 
+    /**
+     * Use case: read the customer  data from a file and give the CustomerService for them
+     *
+     * @return
+     */
     private static CustomerService createCustomerService() {
         newSection("createCustomerService");
-        List<String> customersAsLines = FileParser.load("src/main/resources/data/customers.csv");
+        List<String> customersAsLines = FileParser.load(FILE_CUSTOMERS);
         CustomerFactory customerFactory = new CustomerFactory();
         List<Customer> customersFromFactory = customerFactory.parse(customersAsLines);
         BaseRepository<Customer> customerRepository = new CustomerRepository();
@@ -196,28 +312,31 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        //Loading collections from file to repositories
-        // for customers
+        // Load collections from file to repositories and create services
         CustomerService customerService = createCustomerService();
         List<Customer> customerList = customerService.getAll();
-        // for itineraries
         AirportCodeService airportCodeService = createAirportCodeService();
         ItineraryService itineraryService = createFullItineraryService(airportCodeService);
         List<Itinerary> itineraryList = itineraryService.getAll();
+
         //Check if the repositories loaded correctly
         showCustomers(customerList);
         showItinerary(itineraryList);
-        // Instantiation of ticket repository & service, contains no tickets and simply holds them in memory.
-        // Will be deleted when application stops or is restarted
+
+        // Create ticket service from all data collected
         BaseRepository<Ticket> ticketRepository = new TicketRepository();
         TicketService ticketService = new TicketServiceImpl(customerService, itineraryService, ticketRepository);
+
+        // Start use cases
         addTicketsToService(customerList, itineraryList, ticketService);
         checkInvalidItinerary(customerList, ticketService);
         checkInvalidCustomer(itineraryList, ticketService);
         confirmTicketRegistrations(ticketService);
         ReporterService reporterService = getTicketsAndCosts(customerService, airportCodeService, itineraryService, ticketService);
         getItinerariesPerDestination(reporterService);
+        getItinerariesPerDeparture(reporterService);
         getCustomersWithMostTickets(reporterService);
+        getCustomersWithLargestCostPurchased(reporterService);
         getCustomersWithNoTickets(reporterService);
     }
 

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Responsible for managing Ticket objects
+ * Class responsible for managing Ticket objects
  */
 @AllArgsConstructor
 public class TicketServiceImpl implements TicketService{
