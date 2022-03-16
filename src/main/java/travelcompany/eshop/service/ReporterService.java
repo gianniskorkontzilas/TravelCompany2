@@ -90,7 +90,7 @@ public class ReporterService {
      * List of the customers with the most tickets and with the largest cost of purchases
      * @return
      */
-    public StringBuilder customersWWithMostTicketAndLargestCostPurchased(){
+    public StringBuilder customersWithMostTicketAndLargestCostPurchased(){
         List<CustomerForReportingDTO> perCustomer = totalNumberOfTicketsAndTotalCostOfTicketsPerCustomer();
         StringBuilder result = new StringBuilder();
         result.append("-------------------");
