@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Represents different customer types.
+ * Represents different customer types with their discounts.
  */
 @Getter
 @AllArgsConstructor

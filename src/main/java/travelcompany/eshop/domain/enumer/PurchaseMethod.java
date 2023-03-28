@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Represents different purchase methods.
+ * Represents different purchase methods with their discounts.
  */
 @Getter
 @AllArgsConstructor
